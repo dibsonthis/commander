@@ -2,7 +2,7 @@ import sys
 import pyperclip
 import pyautogui as pya
 from PySide2.QtWidgets import (QLineEdit, QPushButton, QApplication,
-    QVBoxLayout, QDialog, QWidget, QTextEdit)
+    QVBoxLayout, QGridLayout, QDialog, QWidget, QTextEdit)
 from PySide2.QtGui import QFont
 from function_classes.text_functions import TextFunctions
 
@@ -11,7 +11,7 @@ class MainWindow(QWidget):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setWindowTitle('New Window')
-        self.resize(1200,1600)
+        self.resize(1600,1200)
 
         #Functions
         self.commands = {
@@ -51,11 +51,11 @@ class MainWindow(QWidget):
         self.text_line.returnPressed.connect(self.button.click)
 
         # Create layout and add widgets
-        layout = QVBoxLayout()
-        layout.addWidget(self.text_area)
-        layout.addWidget(self.result_area)
-        layout.addWidget(self.text_line)
-        layout.addWidget(self.button)
+        layout = QGridLayout()
+        layout.addWidget(self.text_area,0,0)
+        layout.addWidget(self.result_area,0,1)
+        layout.addWidget(self.text_line,1,0)
+        layout.addWidget(self.button,1,1)
 
         # Set dialog layout
         self.setLayout(layout)

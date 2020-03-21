@@ -109,10 +109,13 @@ class TextFunctions:
                 extract_list = re.findall(r'[\w\.-]+@[\w\.-]+\.\w+', data)
 
             extract_list = '\n'.join(extract_list)
-                
+
             result = {'output': extract_list, 'type': 'plain'}
 
-            print(f'Extracted {data_to_extract}')
+            if not extract_list:
+                extract_list = f'No {data_to_extract} found'
+            else:
+                print(f'Extracted {data_to_extract}')
 
             return result
 
