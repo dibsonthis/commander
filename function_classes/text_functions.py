@@ -98,7 +98,9 @@ class TextFunctions:
 
             data = data['plain']
 
-            data_to_extract = command_arguments
+            command_arguments = command_arguments.split(' ')
+
+            data_to_extract = command_arguments[0]
 
             print(data_to_extract)
 
