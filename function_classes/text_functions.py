@@ -67,7 +67,6 @@ class TextFunctions:
 
         for text in text_only:
             modified_text = text.upper()
-            print(modified_text)
             data = data.replace(text, modified_text)
 
         result = {'output': data, 'type': 'html'}
@@ -110,12 +109,10 @@ class TextFunctions:
 
             extract_list = '\n'.join(extract_list)
 
-            result = {'output': extract_list, 'type': 'plain'}
-
             if not extract_list:
                 extract_list = f'No {data_to_extract} found'
-            else:
-                print(f'Extracted {data_to_extract}')
+
+            result = {'output': extract_list, 'type': 'plain'}
 
             return result
 
