@@ -11,21 +11,20 @@ class TextFunctions:
         h.ignore_images = True
         h.ignore_emphasis = True
 
-        default_tag_replacement = { '<b>'    :  '<strong>',
-                                    '</b>'   :  '</strong>'}
-
-        for tag, replacement_tag in default_tag_replacement.items():
-            data.replace(tag, replacement_tag)
-
         text_only = h.handle(data).split('\n')
 
         text_only = [x.strip() for x in text_only if x]
+
+        # Reverse the list so that larger blocks of text get replaced before smaller ones
+        text_only = sorted(text_only, key=len, reverse=True)
 
         return text_only
 
     def translate(self, data, command_arguments):
 
-        data = data['html']
+        data_type = 'html'
+
+        data = data[data_type]
 
         command_arguments = command_arguments.split(' ')
 
@@ -39,21 +38,27 @@ class TextFunctions:
         from googletrans import Translator
         translator = Translator()
 
-        text_only = self.html_to_text(data)
+        if data_type == 'html':
 
-        replacements = {}
+            text_only = self.html_to_text(data)
 
-        for text in text_only:
-            try:
-                translation = translator.translate(text, src=from_lang, dest=to_lang).text
-                replacements[text] = translation
-            except TypeError:
-                pass
+            replacements = {}
 
-        for text, translation in replacements.items():
-            data = data.replace(text, translation)
+            for text in text_only:
+                try:
+                    translation = translator.translate(text, src=from_lang, dest=to_lang).text
+                    replacements[text] = translation
+                except TypeError:
+                    pass
 
-        result = {'output': data, 'type': 'html'}
+            for text, translation in replacements.items():
+                data = data.replace(text, translation)
+
+        elif data_type == 'html':
+
+            data = translator.translate(data, src=from_lang, dest=to_lang).text
+
+        result = {'output': data, 'type': data_type}
 
         print(f'Translated text from {from_lang} to {to_lang}')
 
@@ -61,15 +66,28 @@ class TextFunctions:
 
     def make_upper(self, data, command_arguments):
 
-        data = data['html']
+        data_type = 'html'
 
-        text_only = self.html_to_text(data)
+        data = data[data_type]
 
-        for text in text_only:
-            modified_text = text.upper()
-            data = data.replace(text, modified_text)
+        if data_type == 'html':
 
-        result = {'output': data, 'type': 'html'}
+            text_only = self.html_to_text(data)
+
+            replacements = {}
+
+            for text in text_only:
+                modified_text = text.upper()
+                replacements[text] = modified_text
+
+            for text, modified_text in replacements.items():  
+                data = data.replace(text, modified_text)
+        
+        elif data_type == 'plain':
+
+            data = data.upper()
+
+        result = {'output': data, 'type': data_type}
 
         print('Made text uppercase')
 
@@ -77,15 +95,28 @@ class TextFunctions:
 
     def make_lower(self, data, command_arguments):
 
-        data = data['html']
+        data_type = 'html'
 
-        text_only = self.html_to_text(data)
+        data = data[data_type]
 
-        for text in text_only:
-            modified_text = text.lower()
-            data = data.replace(text, modified_text)
+        if data_type == 'html':
+
+            text_only = self.html_to_text(data)
+
+            replacements = {}
+
+            for text in text_only:
+                modified_text = text.lower()
+                replacements[text] = modified_text
+
+            for text, modified_text in replacements.items():  
+                data = data.replace(text, modified_text)
+        
+        elif data_type == 'plain':
+
+            data = data.lower()
             
-        result = {'output': data, 'type': 'html'}
+        result = {'output': data, 'type': data_type}
 
         print('Made text lowercase')
 
@@ -95,7 +126,9 @@ class TextFunctions:
 
             import re
 
-            data = data['plain']
+            data_type = 'plain'
+
+            data = data[data_type]
 
             command_arguments = command_arguments.split(' ')
 
@@ -112,7 +145,7 @@ class TextFunctions:
             if not extract_list:
                 extract_list = f'No {data_to_extract} found'
 
-            result = {'output': extract_list, 'type': 'plain'}
+            result = {'output': extract_list, 'type': data_type}
 
             return result
 

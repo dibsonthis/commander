@@ -62,10 +62,10 @@ class MainWindow(QWidget):
         self.layout.addWidget(self.text_line,1,0)
         self.layout.addWidget(self.execute_button,1,1)
 
-        # Set dialog layout
+        # Set layout
         self.setLayout(self.layout)
 
-        # Add button signal to greetings slot
+        # Add button signal to execution function
         self.execute_button.clicked.connect(self.execute_command)
 
     # Executes command
@@ -92,11 +92,16 @@ class MainWindow(QWidget):
             function = self.commands[command_action]
             result = function(data, command_arguments)
 
-            #self.result_area.clear()
             command_print = QLineEdit(self.text_line.text())
             command_print.setReadOnly(True)
+
+            # Inserts the command and the result as widgets
             self.result_area.layout.addWidget(command_print)
             self.result_area.layout.addWidget(ResultBlock(result['output'], result['type']))
+
+            # Make sure scrollbar is always at the bottom
+            scroll_bar = self.result_scroll_area.verticalScrollBar()
+            scroll_bar.rangeChanged.connect( lambda x,y: scroll_bar.setValue(y))
 
             # Clears command line
             self.text_line.clear()
@@ -107,22 +112,27 @@ class ResultBlock(QWidget):
         super(ResultBlock, self).__init__(parent)
         self.result = result
 
+        text_font = QFont('monospace', 16)
+
         if type == 'plain':
             self.result_block = QTextEdit()
+            self.result_block.setFont(text_font)
             self.result_block.insertPlainText(result)
-            self.result_block.setMinimumHeight(400)
+            self.result_block.setMinimumHeight(600)
         elif type == 'html':
             self.result_block = QTextEdit()
+            self.result_block.setFont(text_font)
             self.result_block.insertHtml(result)
-            self.result_block.setMinimumHeight(400)
+            self.result_block.setMinimumHeight(600)
 
         self.result_block.setReadOnly(True)
+        self.result_block
 
         # Create layout and add widgets
         layout = QVBoxLayout()
         layout.addWidget(self.result_block)
 
-        # Set dialog layout
+        # Set layout
         self.setLayout(layout)
 
 
