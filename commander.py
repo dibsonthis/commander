@@ -3,7 +3,7 @@ import pyperclip
 import pyautogui as pya
 from PySide2.QtWidgets import (QLineEdit, QPushButton, QApplication,
     QVBoxLayout, QGridLayout, QListWidget, QListWidgetItem, QDialog, QWidget, QTextEdit, QFrame, QScrollArea)
-from PySide2.QtGui import QFont
+from PySide2.QtGui import QFont, QTextCursor
 from function_classes.text_functions import TextFunctions
 
 class MainWindow(QWidget):
@@ -97,7 +97,8 @@ class MainWindow(QWidget):
 
             # Inserts the command and the result as widgets
             self.result_area.layout.addWidget(command_print)
-            self.result_area.layout.addWidget(ResultBlock(result['output'], result['type']))
+            result_block = ResultBlock(result['output'], result['type'])
+            self.result_area.layout.addWidget(result_block)
 
             # Make sure scrollbar is always at the bottom
             scroll_bar = self.result_scroll_area.verticalScrollBar()
@@ -125,8 +126,11 @@ class ResultBlock(QWidget):
             self.result_block.insertHtml(result)
             self.result_block.setMinimumHeight(600)
 
+        # Make sure scrollbar is always at the bottom
+        self.result_block.moveCursor(QTextCursor().Start)
+        self.result_block.ensureCursorVisible()
+
         self.result_block.setReadOnly(True)
-        self.result_block
 
         # Create layout and add widgets
         layout = QVBoxLayout()

@@ -10,10 +10,13 @@ class TextFunctions:
         h.ignore_links = True
         h.ignore_images = True
         h.ignore_emphasis = True
+        h.escape_snob = True
 
         text_only = h.handle(data).split('\n')
 
         text_only = [x.strip() for x in text_only if x]
+
+        text_only = [x.replace('\\', '') for x in text_only]
 
         # Reverse the list so that larger blocks of text get replaced before smaller ones
         text_only = sorted(text_only, key=len, reverse=True)
@@ -54,7 +57,7 @@ class TextFunctions:
             for text, translation in replacements.items():
                 data = data.replace(text, translation)
 
-        elif data_type == 'html':
+        elif data_type == 'plain':
 
             data = translator.translate(data, src=from_lang, dest=to_lang).text
 
