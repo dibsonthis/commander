@@ -33,7 +33,10 @@ class MainWindow(QWidget):
                 'regex'       :   ExtractFunctions().regex,
                 '-re'         :   ExtractFunctions().regex,
                 # Image Functions
-                'grayscale'   :   ImageFunctions().grayscale
+                'grayscale'   :   ImageFunctions().grayscale,
+                'bw'          :   ImageFunctions().bw,
+                'flip'        :   ImageFunctions().flip,
+                'invert'      :   ImageFunctions().invert
 
         }
 
@@ -275,7 +278,7 @@ class FileArea(QWidget):
         return file_path
 
     def get_file_contents(self, file_path):
-        with open(file_path, 'r') as file:
+        with open(file_path, 'r', encoding="utf8") as file:
             file_contents = file.read()
 
         self.file_preview.insertPlainText(file_contents)
